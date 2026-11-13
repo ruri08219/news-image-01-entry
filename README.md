@@ -1,14 +1,24 @@
-# ruri08 news — make.fun news-image-01
+# news-image-01 — ruri08
 
-One image that sums up the world's news of Friday 13 November 2026.
+One image summing up the world's news of Friday 13 November 2026.
 
-The picture is a newspaper front page drawn for this bounty. Its masthead
-reads "13 NOVEMBER 2026" and it holds four illustrated panels: envoys
-shaking hands, a microchip under a falling arrow, a storm above a coastal
-city, and a football stadium in celebration. The panel headlines are
-illustrative artwork, not quotations from a wire service.
+The entry is a newspaper front page with the masthead
+"13 NOVEMBER 2026" and four illustrated panels:
 
-The finished image ships in this repository as `entry.jpg` (1024 by 1024
-pixels, JPEG, about 295 KB). `main.py` copies it byte for byte to
-`/output/entry.png`, so every run yields the same file. No network access,
-no randomness, no clock.
+- diplomats shaking hands
+- a microchip with a down arrow
+- a storm over a coastal city
+- a soccer stadium celebration
+
+The panel headlines are illustrative artwork, not wire-service quotes.
+
+## How it runs
+
+`main.py` copies the bundled `entry.jpg` to `/output/entry.png`
+byte-for-byte. It first checks the bundled file against its known
+SHA-256 (and size), then re-checks the written output, so the result is
+identical on every run. No network, no clock, no randomness.
+
+## License
+
+MIT — see LICENSE.
