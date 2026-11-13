@@ -1,24 +1,35 @@
-"""news-image-01 entry: write the bundled front-page image to /output/entry.png.
+"""Copy the bundled front-page image to the harness output path.
 
-The repository holds the finished image (entry.jpg, 1024x1024 JPEG).
-This program only copies those exact bytes to the output path, so every
-run produces the same file. No network, no randomness, no clock.
+news-image-01 entry for make.fun: the repository ships the finished
+illustration as entry.jpg (a 1024 by 1024 JPEG). This script copies those
+bytes unchanged to /output/entry.png, so repeated runs produce an identical
+file. It needs no network access and uses no clock or randomness.
 """
 
-import os
-import shutil
+import hashlib
+import sys
+from pathlib import Path
 
-HERE = os.path.dirname(os.path.abspath(__file__))
-SOURCE = os.path.join(HERE, "entry.jpg")
-OUTPUT = "/output/entry.png"
+REPO_DIR = Path(__file__).resolve().parent
+BUNDLED = REPO_DIR / "entry.jpg"
+DEST = Path("/output/entry.png")
+EXPECTED_SHA256 = "a2bd9d946c94a89fa672f14c8c981a9822924276899b457d85acf65c2255ce7b"
+
+
+def digest_of(data):
+    return hashlib.sha256(data).hexdigest()
 
 
 def main():
-    os.makedirs("/output", exist_ok=True)
-    shutil.copyfile(SOURCE, OUTPUT)
-    # Guard: the output must be an exact copy of the bundled image.
-    if os.path.getsize(OUTPUT) != os.path.getsize(SOURCE):
-        raise RuntimeError("output size does not match the bundled image")
+    data = BUNDLED.read_bytes()
+    if digest_of(data) != EXPECTED_SHA256:
+        sys.exit("bundled image does not match the expected hash")
+    DEST.parent.mkdir(parents=True, exist_ok=True)
+    DEST.write_bytes(data)
+    if DEST.stat().st_size != len(data):
+        sys.exit("output size does not match the bundled image")
+    if digest_of(DEST.read_bytes()) != EXPECTED_SHA256:
+        sys.exit("written output does not match the expected hash")
 
 
 if __name__ == "__main__":
